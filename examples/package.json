@@ -1,0 +1,32 @@
+{
+  "name": "@estreladex/sdk-examples",
+  "private": true,
+  "description": "Estella SDK examples",
+  "engines": {
+    "node": ">= 20.9",
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "pnpmi": "cd ../ && pnpm build && cd examples && rm -rf node_modules && pnpm i",
+    "compile": "tsc",
+    "run:get-balance": "ts-node src/examples/get-balance.ts",
+    "run:get-pools": "HTTP_INSPECTOR=ui ts-node src/examples/get-pools.ts",
+    "run:pools:claim-rewards": "HTTP_INSPECTOR=ui ts-node src/examples/pools/claim-rewards.ts",
+    "run:pools:deposit": "HTTP_INSPECTOR=ui ts-node src/examples/pools/deposit.ts",
+    "run:pools:swap": "HTTP_INSPECTOR=ui ts-node src/examples/pools/swap.ts",
+    "run:pools:user-info": "HTTP_INSPECTOR=ui ts-node src/examples/pools/user-info.ts",
+    "run:pools:withdraw": "HTTP_INSPECTOR=ui ts-node src/examples/pools/withdraw.ts"
+  },
+  "dependencies": {
+    "@estreladex/sdk": "file:..",
+    "@stellar/stellar-sdk": "^14.0.0-rc.3",
+    "bignumber.js": "^9.3.1",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.15",
+    "dotenv": "^17.2.0",
+    "http-inspector": "^0.1.11",
+    "typescript": "^5.3.3"
+  }
+}

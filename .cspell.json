@@ -1,0 +1,25 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "aprs",
+    "typeof",
+    "Estrela",
+    "estreladex",
+    "soroban",
+    "STLR",
+    "futurenet",
+    "alphanum",
+    "bignumber",
+    "keypair"
+  ],
+  "flagWords": [],
+  "ignorePaths": [
+    "package.json",
+    "tsconfig.json",
+    "node_modules/**",
+    "pnpm-lock.json",
+    "src/services/models/generated",
+    "src/configs/mainnet.ts"
+  ]
+}

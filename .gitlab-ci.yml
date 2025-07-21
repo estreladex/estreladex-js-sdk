@@ -1,0 +1,131 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_COMMIT_BRANCH == 'alpha'
+    - if: $CI_COMMIT_BRANCH == 'beta'
+
+default:
+  image:
+    name: node:22
+    docker:
+      platform: linux/amd64
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules
+      - .pnpm-store
+      - examples/node_modules
+
+.node-job:
+  before_script:
+    - corepack enable
+    - pnpm --version
+    - pnpm config set store-dir .pnpm-store
+
+stages:
+  - install
+  - build
+  - build-examples
+  - check
+  - test
+  - docs
+  - sast
+  - secret-detection
+  - release
+
+variables:
+  NPM_TOKEN: $NPM_TOKEN
+  SECRET_DETECTION_ENABLED: 'true'
+
+install-deps-job:
+  extends: .node-job
+  stage: install
+  script:
+    - echo "Installing dependencies..."
+    - pnpm install
+    - echo "Dependencies installed"
+
+build-job:
+  extends: .node-job
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - pnpm run build
+    - echo "Compile complete"
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1h
+
+build-examples-job:
+  extends: .node-job
+  stage: build-examples
+  dependencies:
+    - build-job
+  script:
+    - echo "Compiling the examples code..."
+    - cd examples
+    - pnpm install
+    - pnpm run compile
+    - echo "Compile examples complete"
+
+check-job:
+  extends: .node-job
+  stage: check
+  dependencies:
+    - build-job
+    - build-examples-job
+  script:
+    - echo "Formatter check code..."
+    - pnpm run format:check
+    - echo "No format issues found"
+    - echo "Linter check Code..."
+    - pnpm run lint:check
+    - echo "No lint issues found"
+    - echo "Spell check Code..."
+    - pnpm run spell:check
+    - echo "No spell issues found"
+
+test-job:
+  extends: .node-job
+  stage: test
+  script:
+    - echo "Running unit tests..."
+    - pnpm run test
+    - echo "No test issues found"
+
+docs-job:
+  extends: .node-job
+  stage: docs
+  script:
+    - echo "Generating docs..."
+    - pnpm run tsdoc
+    - echo "No docs issues found"
+
+# 🔐 Secret Detection & SAST
+sast:
+  stage: check
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+secret_detection:
+  stage: check
+
+release-job:
+  extends: .node-job
+  stage: release
+  dependencies:
+    - build-job
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "alpha"
+    - if: $CI_COMMIT_BRANCH == "beta"
+  script:
+    - echo "Releasing sdk..."
+    - pnpm run release
+    - echo "Release finished"
+#  before_script:
+#    - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+#    - git config --global user.email "ci@gitlab.com"
+#    - git config --global user.name "GitLab CI"

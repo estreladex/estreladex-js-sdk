@@ -1,0 +1,1 @@
+export const FINANCIAL_POOL_PRECISION = 3;

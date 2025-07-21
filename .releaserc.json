@@ -1,0 +1,9 @@
+{
+  "repositoryUrl": "https://gitlab.allbrid.ge/allbridge-io/estrela-js-sdk.git",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/npm",
+    "@semantic-release/gitlab"
+  ]
+}
