@@ -14,7 +14,7 @@ const config: Config = {
   // coverageDirectory: 'coverage',
   // collectCoverageFrom: ['src/**/*.ts', 'src/**/*.mts', '!src/**/*.d.ts', '!src/**/*.d.mts'],
 
-  testMatch: ['<rootDir>/src/**/*.test.ts'],
+  testMatch: ['<rootDir>/src/**/*.test.ts', '<rootDir>/src/**/*.manual.ts'],
 };
 
 export default config;

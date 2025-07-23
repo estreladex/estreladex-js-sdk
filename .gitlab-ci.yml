@@ -118,9 +118,9 @@ release-job:
   dependencies:
     - build-job
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "alpha"
-    - if: $CI_COMMIT_BRANCH == "beta"
+    - if: $CI_COMMIT_BRANCH == "main" && $GITLAB_TOKEN
+    - if: $CI_COMMIT_BRANCH == "alpha" && $GITLAB_TOKEN
+    - if: $CI_COMMIT_BRANCH == "beta" && $GITLAB_TOKEN
   script:
     - echo "Releasing sdk..."
     - pnpm run release

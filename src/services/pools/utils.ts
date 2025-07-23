@@ -1,7 +1,7 @@
 import { contract } from '@stellar/stellar-sdk';
-import { LiquidityPool, LiquidityPoolProperties } from '../../models';
+import { LiquidityPool } from '../../models';
 import { ThreePoolContract, ThreeToken } from '../models/generated/three-pool-contract';
-import { TwoPoolContract } from '../models/generated/two-pool-contract';
+import { TwoPoolContract, TwoToken } from '../models/generated/two-pool-contract';
 import ContractClientOptions = contract.ClientOptions;
 
 export function getPoolContractType(
@@ -14,7 +14,15 @@ export function getPoolContractType(
   }
 }
 
-export function getThreeToken(
+export function normalizeLiquidityPool<T extends LiquidityPool>(pool: T): LiquidityPool {
+  const { address, tokens } = pool;
+  return {
+    address,
+    tokens,
+  };
+}
+
+export function resolveTokenPairThreePool(
   pool: LiquidityPool,
   sourceTokenAddress: string,
   destTokenAddress: string,
@@ -38,10 +46,15 @@ export function getThreeToken(
   return { tokenFrom, tokenTo };
 }
 
-export function transformLiquidityPoolPropertiesToLiquidityPool(pool: LiquidityPoolProperties): LiquidityPool {
-  const { address, tokens } = pool;
-  return {
-    address,
-    tokens,
-  };
+export function resolveTokenPairTwoPool(
+  pool: LiquidityPool,
+  sourceTokenAddress: string,
+  destTokenAddress: string,
+): {
+  tokenFrom: TwoToken;
+  tokenTo: TwoToken;
+} {
+  const tokenFrom: TwoToken = pool.tokens[0].address === sourceTokenAddress ? TwoToken.A : TwoToken.B;
+  const tokenTo: TwoToken = pool.tokens[0].address === destTokenAddress ? TwoToken.A : TwoToken.B;
+  return { tokenFrom, tokenTo };
 }

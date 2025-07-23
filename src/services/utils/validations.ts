@@ -13,8 +13,17 @@ export function validateAmountGteZero(argName: string, amount: BigNumber.Value) 
     throw new InvalidAmountError(`${argName} amount must be greater or equal than zero`);
   }
 }
+
 export function validateAmountGtZero(argName: string, amount: BigNumber.Value) {
   if (BigNumber(amount).isNaN() || BigNumber(amount).lte(0)) {
     throw new InvalidAmountError(`${argName} amount must be greater than zero`);
+  }
+}
+
+export function validateArraysSameLength(argNameA: string, argNameB: string, arrA: unknown[], arrB: unknown[]) {
+  if (arrA.length !== arrB.length) {
+    throw new InvalidAmountError(
+      `${argNameA} and ${argNameB} must have the same length (got ${arrA.length} and ${arrB.length})`,
+    );
   }
 }
