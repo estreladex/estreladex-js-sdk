@@ -5,11 +5,11 @@ export interface LiquidityPool {
   tokens: Token[];
 }
 
-export interface LiquidityPoolProperties extends LiquidityPool {
+export interface LiquidityPoolExtended extends LiquidityPool {
   feeShareBp: string;
 }
 
-export interface LiquidityPoolWithDetails extends LiquidityPool {
+export interface LiquidityPoolSnapshot extends LiquidityPool {
   tokenBalances: string[];
   totalLpAmount: string;
   apr?: string;

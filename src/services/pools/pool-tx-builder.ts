@@ -8,12 +8,12 @@ import {
   WithdrawParams,
 } from '../../index';
 import { ThreePoolContract } from '../models/generated/three-pool-contract';
-import { TwoPoolContract, TwoToken } from '../models/generated/two-pool-contract';
+import { TwoPoolContract } from '../models/generated/two-pool-contract';
 import { convertFloatAmountToInt } from '../utils/calculations';
 import { getContract } from '../utils/utils';
 import { validateAmountDecimals, validateAmountGteZero, validateAmountGtZero } from '../utils/validations';
 import { PoolService } from './pool-service';
-import { getPoolContractType, getThreeToken } from './utils';
+import { getPoolContractType, resolveTokenPairThreePool, resolveTokenPairTwoPool } from './utils';
 
 export interface PoolTxBuilder {
   /**
@@ -54,8 +54,11 @@ export class PoolTxBuilderService implements PoolTxBuilder {
 
     if (pool.tokens.length === 2) {
       const poolContract = getContract(TwoPoolContract, pool.address, this.rpcOptions, params.sender);
-      const tokenFrom: TwoToken = pool.tokens[0].address === params.sourceToken.address ? TwoToken.A : TwoToken.B;
-      const tokenTo: TwoToken = pool.tokens[0].address === params.destToken.address ? TwoToken.A : TwoToken.B;
+      const { tokenFrom, tokenTo } = resolveTokenPairTwoPool(
+        pool,
+        params.sourceToken.address,
+        params.destToken.address,
+      );
       return (
         await poolContract.swap({
           sender: params.sender,
@@ -70,7 +73,11 @@ export class PoolTxBuilderService implements PoolTxBuilder {
       ).toXDR();
     } else {
       const poolContract = getContract(ThreePoolContract, pool.address, this.rpcOptions, params.sender);
-      const { tokenFrom, tokenTo } = getThreeToken(pool, params.sourceToken.address, params.destToken.address);
+      const { tokenFrom, tokenTo } = resolveTokenPairThreePool(
+        pool,
+        params.sourceToken.address,
+        params.destToken.address,
+      );
       return (
         await poolContract.swap({
           sender: params.sender,
