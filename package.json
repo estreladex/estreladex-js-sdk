@@ -38,6 +38,8 @@
     "commit": "cz",
     "prepack": "pnpm run updateVersion",
     "updateVersion": "node -p \"'export const VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "prepare": "pnpm run buildVersion",
+    "buildVersion": "tsc --p tsconfig.version.json",
     "release": "semantic-release"
   },
   "dependencies": {
