@@ -10,12 +10,12 @@
     "pnpmi": "cd ../ && pnpm build && cd examples && rm -rf node_modules && pnpm i",
     "compile": "tsc",
     "run:get-balance": "ts-node src/examples/get-balance.ts",
-    "run:get-pools": "HTTP_INSPECTOR=ui ts-node src/examples/get-pools.ts",
-    "run:pools:claim-rewards": "HTTP_INSPECTOR=ui ts-node src/examples/pools/claim-rewards.ts",
-    "run:pools:deposit": "HTTP_INSPECTOR=ui ts-node src/examples/pools/deposit.ts",
-    "run:pools:swap": "HTTP_INSPECTOR=ui ts-node src/examples/pools/swap.ts",
-    "run:pools:user-info": "HTTP_INSPECTOR=ui ts-node src/examples/pools/user-info.ts",
-    "run:pools:withdraw": "HTTP_INSPECTOR=ui ts-node src/examples/pools/withdraw.ts"
+    "run:get-pools": "HTTP_INSPECTOR=pretty ts-node src/examples/get-pools.ts",
+    "run:pools:claim-rewards": "HTTP_INSPECTOR=pretty ts-node src/examples/pools/claim-rewards.ts",
+    "run:pools:deposit": "HTTP_INSPECTOR=pretty ts-node src/examples/pools/deposit.ts",
+    "run:pools:swap": "HTTP_INSPECTOR=pretty ts-node src/examples/pools/swap.ts",
+    "run:pools:user-info": "HTTP_INSPECTOR=pretty ts-node src/examples/pools/user-info.ts",
+    "run:pools:withdraw": "HTTP_INSPECTOR=pretty ts-node src/examples/pools/withdraw.ts"
   },
   "dependencies": {
     "@estreladex/sdk": "file:..",
@@ -27,6 +27,7 @@
     "@types/node": "^20.11.15",
     "dotenv": "^17.2.0",
     "http-inspector": "^0.1.11",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }
