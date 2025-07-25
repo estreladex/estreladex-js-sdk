@@ -16,3 +16,5 @@ docs/*
 !docs/404.html
 
 .env
+
+src/configs/testnet.ts

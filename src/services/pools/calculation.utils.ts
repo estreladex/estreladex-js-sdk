@@ -81,10 +81,18 @@ export function calculateAmountToSend(
   const d0 = BigInt(convertFloatAmountToInt(pool.totalLpAmount, FINANCIAL_POOL_PRECISION).toFixed());
   const feeShareBp = BigInt(pool.feeShareBp);
   const fee = (outputInt * feeShareBp) / (BP - feeShareBp);
+  const feeFloat = convertIntAmountToFloat(fee.toString(), params.sourceToken.decimals).toFixed();
+
   const outputWithFee = outputInt + fee;
   const outputSp = convertAmountPrecision(outputWithFee, params.destToken.decimals, FINANCIAL_POOL_PRECISION);
 
   const tokenToNewBalance = balances[tokenToIndex] - outputSp;
+  if (tokenToNewBalance < 0) {
+    return {
+      amount: '0',
+      fee: feeFloat,
+    };
+  }
 
   let tokenFromNewBalance: bigint;
 
@@ -103,7 +111,7 @@ export function calculateAmountToSend(
 
   return {
     amount: convertIntAmountToFloat(input, params.sourceToken.decimals).toFixed(),
-    fee: convertIntAmountToFloat(fee.toString(), params.sourceToken.decimals).toFixed(),
+    fee: feeFloat,
   };
 }
 
@@ -166,6 +174,13 @@ export function calculateAmountToBeWithdrawn(
     yArgs[1] = balances[indexes[2]] - tokenAmountsSp[2];
   }
 
+  if (yArgs.find((yArg) => yArg < 0)) {
+    return {
+      tokenAmounts: new Array(N).fill('0'),
+      tokenFees: new Array(N).fill('0'),
+    };
+  }
+
   let y: bigint;
   if (pool.tokens.length === 2) {
     y = getYTwoPool([yArgs[0], yArgs[1]], A);
@@ -173,7 +188,7 @@ export function calculateAmountToBeWithdrawn(
     y = getYThreePool([yArgs[0], yArgs[1], yArgs[2]], A);
   }
 
-  tokenAmountsSp[1] = balances[1] - y;
+  tokenAmountsSp[1] = balances[indexes[1]] - y;
 
   const fees: bigint[] = [];
   const amounts: bigint[] = [];
